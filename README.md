@@ -15,3 +15,5 @@ To run the 100-tree model on the 114 universals found to be significant by the 2
 The final unified spreadsheet (`output/Results_combined_BT_GPB.xlsx`) combines the Verkerk et al results with the present analysis. To produce this file, run the script at `utils/compile_master_data_sheet.py`.
 
 To create a plot of the significant universals and their beta coefficients, run the script at `utils/plot_universals_forest.py` - it will create a pdf in the `output` directory based on the final unified spreadsheet.
+
+[![Forest plot](./output/universals_forest_plot.png)](./output/universals_forest_plot.pdf)
