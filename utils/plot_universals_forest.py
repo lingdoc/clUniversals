@@ -147,7 +147,8 @@ def generate_proportional_quadrant_plot():
         clean_title = cat.title() if cat != 'other' else 'Other Morphosyntactic'
         fig.text(bbox.x0, bbox.y1 + 0.012, f"Category: {clean_title} (n={count})", fontsize=9, fontweight='bold', ha='left', va='bottom')
 
-    plt.savefig(output_pdf, dpi=300, bbox_inches='tight', pad_inches=0.02)
+    plt.savefig(output_pdf, dpi=300, bbox_inches='tight', pad_inches=0.02) # export pdf
+    plt.savefig(output_pdf[:-3]+"png", dpi=300, bbox_inches='tight', pad_inches=0.02) # export png
     print(f" Success! Forest plot saved to '{output_pdf}'")
 
 if __name__ == "__main__":
