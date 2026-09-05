@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import matplotlib.gridspec as gridspec
+from scipy import stats
 
 def generate_supplementary_tables(df_master):
     """
@@ -64,7 +65,32 @@ def generate_supplementary_tables(df_master):
     table_b = table_b_rows[[CODE_COL, SHORT_NAME_COL, DEF_COL, GPB_BETA_COL, 'Support_Source']].copy()
     table_b.columns = ['Code', 'Short_Name', 'Definition', 'GPB_Beta', 'Support_Source']
 
-    # export to excel
+    # generate table C to conduct binomial test on 109 significant features
+    table_c_rows = df[gpb_sig_mask].copy()
+    # column containing the Beta coefficients.
+    target_column = 'GPB_100Tree_Beta'
+    # count how many betas are greater than zero
+    successes = (table_c_rows[target_column] > 0).sum()
+    total_n = len(table_c_rows)
+    failures = (table_c_rows[target_column] < 0).sum()
+
+    print(f"--- Analysis Summary ---")
+    print(f"Total Significant Features Analyzed: {total_n}")
+    print(f"Positive Betas (Successes): {successes}")
+    print(f"Negative Betas (Failures): {failures}")
+
+    # Binomial Test (use 'greater' to test if there is a significant bias toward POSITIVE coefficients)
+    p_value = stats.binomtest(successes, n=total_n, p=0.5, alternative='greater').pvalue
+
+    print(f"\n--- Statistical Result ---")
+    print(f"P-value: {p_value:.2e}")
+
+    if p_value < 0.05:
+        print("Conclusion: Reject H0. There is a significant directional bias in the coefficients.")
+    else:
+        print("Conclusion: Fail to reject H0. The distribution of signs is consistent with randomness.")
+
+    # export tables to excel
     try:
         table_a.to_excel("../output/Table_A_Consensus.xlsx", index=False)
         table_b.to_excel("../output/Table_B_Expansion.xlsx", index=False)
